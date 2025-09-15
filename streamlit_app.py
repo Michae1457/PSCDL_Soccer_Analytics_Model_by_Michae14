@@ -45,61 +45,129 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Set theme to light mode
+# Force light theme regardless of system settings
 st.markdown("""
 <script>
-    // Force light theme
-    if (window.parent !== window) {
-        window.parent.postMessage({
-            type: 'streamlit:setThemeConfig',
-            themeConfig: {
-                base: 'light',
-                primaryColor: '#2E8B57',
-                backgroundColor: '#FFFFFF',
-                secondaryBackgroundColor: '#F0F8F0',
-                textColor: '#262730'
-            }
-        }, '*');
-    }
+    // Force light theme and override system settings
+    const setLightTheme = () => {
+        // Override Streamlit's theme detection
+        const root = document.documentElement;
+        root.setAttribute('data-theme', 'light');
+        
+        // Force light theme colors
+        root.style.setProperty('--background-color', '#FFFFFF');
+        root.style.setProperty('--secondary-background-color', '#F0F8F0');
+        root.style.setProperty('--text-color', '#262730');
+        root.style.setProperty('--primary-color', '#2E8B57');
+        
+        // Override any dark theme classes
+        document.body.classList.remove('dark');
+        document.body.classList.add('light');
+        
+        // Force Streamlit to use light theme
+        if (window.parent !== window) {
+            window.parent.postMessage({
+                type: 'streamlit:setThemeConfig',
+                themeConfig: {
+                    base: 'light',
+                    primaryColor: '#2E8B57',
+                    backgroundColor: '#FFFFFF',
+                    secondaryBackgroundColor: '#F0F8F0',
+                    textColor: '#262730'
+                }
+            }, '*');
+        }
+    };
+    
+    // Apply theme immediately and on any changes
+    setLightTheme();
+    document.addEventListener('DOMContentLoaded', setLightTheme);
+    window.addEventListener('load', setLightTheme);
+    
+    // Override theme detection
+    const observer = new MutationObserver(() => {
+        setLightTheme();
+    });
+    observer.observe(document.body, { attributes: true, childList: true, subtree: true });
 </script>
 """, unsafe_allow_html=True)
 
-# Custom CSS for green theme with white background
+# Custom CSS for green theme with white background - Force light theme
 st.markdown("""
 <style>
-    /* Set overall page background to white */
+    /* Force light theme - override any dark theme styles */
+    :root {
+        --background-color: #FFFFFF !important;
+        --secondary-background-color: #F0F8F0 !important;
+        --text-color: #262730 !important;
+        --primary-color: #2E8B57 !important;
+    }
+    
+    /* Set overall page background to white - force override */
     .main .block-container {
-        background-color: white;
+        background-color: white !important;
     }
     
     .stApp {
-        background-color: white;
+        background-color: white !important;
+    }
+    
+    /* Override dark theme styles */
+    .stApp[data-theme="dark"],
+    .stApp[data-theme="light"],
+    .stApp {
+        background-color: white !important;
+    }
+    
+    /* Force light theme on all elements */
+    .main .block-container,
+    .main .block-container * {
+        background-color: white !important;
+        color: #262730 !important;
     }
     
     .main-header {
         background: linear-gradient(135deg, #2E8B57, #32CD32, #90EE90);
         padding: 2rem;
         border-radius: 10px;
-        color: white;
+        color: white !important;
         text-align: center;
         margin-bottom: 2rem;
+    }
+    
+    .main-header h1,
+    .main-header p,
+    .main-header * {
+        color: white !important;
     }
     
     .metric-card {
         background: linear-gradient(135deg, #2E8B57, #32CD32);
         padding: 1rem;
         border-radius: 10px;
-        color: white;
+        color: white !important;
         text-align: center;
         margin: 0.5rem 0;
+    }
+    
+    .metric-card h2,
+    .metric-card p,
+    .metric-card * {
+        color: white !important;
     }
     
     .section-header {
         background: linear-gradient(135deg, #2E8B57, #32CD32);
         padding: 1rem;
         border-radius: 8px;
-        color: white;
+        color: white !important;
         margin: 1rem 0;
+    }
+    
+    .section-header h3,
+    .section-header i,
+    .section-header * {
+        color: white !important;
     }
     
     .stSelectbox > div > div {
@@ -131,7 +199,89 @@ st.markdown("""
     
     /* Style the sidebar if needed */
     .css-1d391kg {
-        background-color: #f8f9fa;
+        background-color: #f8f9fa !important;
+    }
+    
+    /* Override dark theme specific elements */
+    .stSelectbox > div > div,
+    .stSelectbox > div > div > div,
+    .stTextInput > div > div > input,
+    .stTextArea > div > div > textarea,
+    .stDataFrame,
+    .stDataFrame > div,
+    .stDataFrame table,
+    .stDataFrame th,
+    .stDataFrame td {
+        background-color: white !important;
+        color: #262730 !important;
+        border-color: #e0e0e0 !important;
+    }
+    
+    /* Override any dark theme text colors */
+    .stMarkdown,
+    .stMarkdown p,
+    .stMarkdown h1,
+    .stMarkdown h2,
+    .stMarkdown h3,
+    .stMarkdown h4,
+    .stMarkdown h5,
+    .stMarkdown h6,
+    .stMarkdown li,
+    .stMarkdown ul,
+    .stMarkdown ol {
+        color: #262730 !important;
+    }
+    
+    /* Override dark theme for specific Streamlit components */
+    .stAlert,
+    .stAlert > div,
+    .stInfo,
+    .stInfo > div,
+    .stSuccess,
+    .stSuccess > div,
+    .stWarning,
+    .stWarning > div,
+    .stError,
+    .stError > div {
+        background-color: #f0f8f0 !important;
+        color: #262730 !important;
+        border-color: #2E8B57 !important;
+    }
+    
+    /* Force light theme on all Streamlit widgets */
+    .stWidget > div,
+    .stWidget > div > div,
+    .stWidget label,
+    .stWidget .stMarkdown {
+        background-color: white !important;
+        color: #262730 !important;
+    }
+    
+    /* Override any conflicting text colors in green sections */
+    .main-header,
+    .main-header *,
+    .metric-card,
+    .metric-card *,
+    .section-header,
+    .section-header * {
+        color: white !important;
+    }
+    
+    /* Specific overrides for green section text */
+    .main-header h1,
+    .main-header p,
+    .main-header span,
+    .main-header div,
+    .metric-card h2,
+    .metric-card p,
+    .metric-card span,
+    .metric-card div,
+    .section-header h3,
+    .section-header p,
+    .section-header span,
+    .section-header div,
+    .section-header i {
+        color: white !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -700,3 +850,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
