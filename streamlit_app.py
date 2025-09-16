@@ -621,6 +621,7 @@ def main():
     st.markdown("""
     <div class="main-header">
         <h1><i class="fas fa-futbol"></i> Soccer Analytics Dashboard</h1>
+        <p style="margin: 0; font-size: 1.2em;">FA Women's Super League Data from Statsbomb</p>
         <p style="margin: 0; font-size: 1.2em;">Designed by Michael Xu</p>
     </div>
     """, unsafe_allow_html=True)
